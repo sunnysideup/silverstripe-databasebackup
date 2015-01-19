@@ -1,0 +1,8 @@
+---
+Name: databasebackup_config
+Before: 'mysite/*'
+After: 'framework/*','cms/*'
+---
+
+DatabasebackupLog:
+  compression: ''
