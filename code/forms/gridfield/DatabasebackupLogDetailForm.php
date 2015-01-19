@@ -3,11 +3,6 @@
 class DatabasebackupLogDetailForm extends GridFieldDetailForm {
 
 
-	private static $allowed_actions = array(
-		"ItemEditForm" => "ADMIN",
-		"doDownload" => "ADMIN",
-	);
-
 }
 
 class DatabasebackupLogDetailForm_ItemRequest extends GridFieldDetailForm_ItemRequest {
@@ -69,7 +64,7 @@ class DatabasebackupLogDetailForm_ItemRequest extends GridFieldDetailForm_ItemRe
 		if(!file_exists($databaseToRestore->FullLocation)) {
 			return new SS_HTTPResponse("file #$id not found", 400);
 		}
-		return SS_HTTPRequest::send_file(file_get_contents($databaseToRestore->FullLocation), basename($this->FullLocation));
+
 	}
 
 	/**
@@ -98,4 +93,22 @@ class DatabasebackupLogDetailForm_ItemRequest extends GridFieldDetailForm_ItemRe
 
 
 
+}
+
+
+
+class DatabasebackupLogDetailForm_Controller extends Controller {
+
+	private static $allowed_actions = array(
+		"download"
+	);
+
+	function download($request){
+		$id = intval($request->param("ID"));
+		if($id) {
+			$obj = DatabasebackupLog::get()->byID($id);
+			return SS_HTTPRequest::send_file(file_get_contents($obj->FullLocation), basename($obj->FullLocation));
+		}
+		user_error("Could not action download", E_USER_WARNING);
+	}
 }

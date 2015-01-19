@@ -6,3 +6,4 @@ DatabasebackupLog:
   full_location_for_db_backup_file: '/var/backups/mybackupfile.sql'
   max_db_copies: 7
   compression: gzip
+  allow_restores_in_live_environment: true

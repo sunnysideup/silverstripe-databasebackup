@@ -1,5 +1,7 @@
 <?php
 
+
+
 class Databasebackup_ModelAdmin extends ModelAdmin {
 
   private static $managed_models = array('DatabasebackupLog');
@@ -7,6 +9,10 @@ class Databasebackup_ModelAdmin extends ModelAdmin {
   private static $url_segment = 'databasebackuplog';
 
   private static $menu_title = 'Database Backup';
+
+	private static $allowed_actions = array(
+		"test"
+	);
 
 	/**
 	 * @param Member $member
@@ -39,8 +45,6 @@ class Databasebackup_ModelAdmin extends ModelAdmin {
 			//->setFormActions($model->getCMSActions());
 		return $form;
 	}
-
-
 
 }
 
