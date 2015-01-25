@@ -202,6 +202,7 @@ class DatabasebackupLog extends DataObject {
 		if(!Director::IsLive() || $this->Config()->get("allow_restores_in_live_environment")) {
 			$fileLocation = $this->FullLocation;
 			if(file_exists($fileLocation)) {
+				$this->saveToSession();
 				global $databaseConfig;
 				$compression = $this->Config()->get("compression");
 				if($compression == "gzip") {
@@ -213,11 +214,46 @@ class DatabasebackupLog extends DataObject {
 				exec($command);
 				//reset list of backups ...
 				$this->requireDefaultRecords();
+				$this->retrieveFromSession();
 				Controller::curr()->redirect("/admin/databasebackuplog/");
 				return true;
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * we have this so that when we restore a database
+	 * we dont loose the backup information...
+	 * saves all the logs to session
+	 */
+	protected function saveToSession(){
+		foreach(DatabasebackupLog::get() as $object) {
+			$array[$object->ID] = array(
+				"FullLocation" => $object->FullLocation,
+				"Title" => $object->Title,
+				"Notes" => $object->Notes,
+				"Created" => $object->Created
+			);
+			Session::set("DatabasebackupLogs", serialize($array));
+		}
+	}
+
+	/**
+	 *
+	 * retrieves and updates all the logs from session
+	 */
+	protected function retrieveFromSession(){
+		$array = unserialize(Session::get("DatabasebackupLogs"));
+		foreach($array as $id => $values) {
+			$obj = DatabasebackupLog::get()->filter(array("FullLocation" => $values["FullLocation"]))->first();
+			if($obj) {
+				$obj->Title = convert::raw2sql($values["Title"]);
+				$obj->Notes = convert::raw2sql($values["Notes"]);
+				$obj->Created = convert::raw2sql($values["Created"]);
+				$obj->write();
+			}
+		}
 	}
 
 	/**

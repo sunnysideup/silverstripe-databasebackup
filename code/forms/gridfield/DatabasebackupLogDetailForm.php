@@ -80,6 +80,7 @@ class DatabasebackupLogDetailForm_ItemRequest extends GridFieldDetailForm_ItemRe
 			Config::inst()->update("DatabasebackupLog", "max_db_copies", Config::inst()->get("DatabasebackupLog", "max_db_copies") + 1);
 			//firstly make a backup of the current state ...
 			$obj = new DatabasebackupLog();
+			$obj->Title = _t("DatabaseBackup.RESTORE_NOTE", "Additional backup before doing a database restore.");
 			$obj->write();
 			//make sure it still exists ...
 			$databaseToRestore = DatabasebackupLog::get()->byID($databaseToRestore->ID);
