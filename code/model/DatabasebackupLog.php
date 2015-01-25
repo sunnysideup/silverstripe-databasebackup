@@ -18,6 +18,7 @@ class DatabasebackupLog extends DataObject {
 
 	private static $db = array(
 		"Title" => "Varchar(255)",
+		"Notes" => "Text",
 		"FullLocation" => "Varchar(255)",
 		"SizeInBytes" => "Int",
 		"DebugMessage" => "Text"
@@ -26,7 +27,6 @@ class DatabasebackupLog extends DataObject {
 	private static $indexes = array(
 		"FullLocation" => true
 	);
-
 
 	private static $default_sort = "Created DESC";
 
