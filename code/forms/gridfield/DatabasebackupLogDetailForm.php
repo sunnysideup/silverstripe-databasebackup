@@ -38,7 +38,7 @@ class DatabasebackupLogDetailForm_ItemRequest extends GridFieldDetailForm_ItemRe
 		}
 		$outcome = $this->restoreDatabaseBackup($databaseToRestore);
 		if($outcome) {
-			$message = _t('Databasebackup.DB_RESTORED', 'Database Restored');
+			$message = _t('Databasebackup.DB_RESTORED', 'Database Restored, please reload the entire site to continue...');
 		}
 		else {
 			$message = _t('Databasebackup.DB_NOT_RESTORED', 'Database * NOT * Restored');
