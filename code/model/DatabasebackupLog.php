@@ -37,7 +37,6 @@ class DatabasebackupLog extends DataObject {
 	private static $summary_fields = array(
 		"Title" => "Title",
 		"Created" => "Created",
-		"FullLocation" => "Location",
 		"SizeInMegabytes" => "Size (in Mb.)",
 	);
 
