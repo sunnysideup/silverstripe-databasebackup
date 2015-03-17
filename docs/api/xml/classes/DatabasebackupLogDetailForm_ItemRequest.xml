@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class xmlns="http://xml.phpdox.net/src" full="DatabasebackupLogDetailForm_ItemRequest" namespace="" name="DatabasebackupLogDetailForm_ItemRequest" abstract="false" final="false" start="8" end="97">
+  <file path="/var/www/_modules/databasebackup/trunk/docs/en/phpdox/../../../code/forms/gridfield" file="DatabasebackupLogDetailForm.php" realpath="/var/www/_modules/databasebackup/trunk/code/forms/gridfield/DatabasebackupLogDetailForm.php" size="3219" time="2015-03-14T10:23:10+13:00" unixtime="1426281790" sha1="2419891382d4ce79ddd06732942ed6472668edea" relative="code/forms/gridfield/DatabasebackupLogDetailForm.php"/>
+  <extends full="GridFieldDetailForm_ItemRequest" namespace="" name="GridFieldDetailForm_ItemRequest"/>
+  <member name="allowed_actions" type="array" visibility="private" line="10"/>
+  <method name="ItemEditForm" start="16" end="25" abstract="false" final="false" static="false" visibility="public"/>
+  <method name="doRestoreDatabaseBackup" start="31" end="48" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="run the action (separate method) and send the right message back"/>
+    </docblock>
+    <parameter name="data" byreference="false" type="{unknown}"/>
+    <parameter name="form" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="doDownload" start="56" end="68" abstract="false" final="false" static="false" visibility="public">
+    <docblock>
+      <description compact="downloads the file"/>
+      <param type="object" variable="$data">
+        <type full="Array" namespace="" name="Array"/>
+      </param>
+      <param type="object" variable="$form">
+        <type full="Form" namespace="" name="Form"/>
+      </param>
+    </docblock>
+    <parameter name="data" byreference="false" type="{unknown}"/>
+    <parameter name="form" byreference="false" type="{unknown}"/>
+  </method>
+  <method name="restoreDatabaseBackup" start="78" end="92" abstract="false" final="false" static="false" visibility="private">
+    <docblock>
+      <description compact="copies back up files up one ...">returns true on success, false on failure</description>
+      <param type="object" variable="$databaseToRestore">
+        <type full="DatabasebackupLog" namespace="" name="DatabasebackupLog"/>
+      </param>
+      <return type="object">
+        <type full="Boolean" namespace="" name="Boolean"/>
+      </return>
+    </docblock>
+    <parameter name="databaseToRestore" byreference="false" type="object">
+      <type full="\\DatabasebackupLog" namespace="\" name="DatabasebackupLog"/>
+    </parameter>
+    <inline>
+      <comment value="firstly make a backup of the current state ..." line="81"/>
+      <comment value="make sure it still exists ..." line="85"/>
+    </inline>
+  </method>
+</class>

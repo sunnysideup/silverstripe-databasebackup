@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<index xmlns="http://xml.phpdox.net/src" basedir="/var/www/_modules/databasebackup/trunk">
+  <namespace name="">
+    <class name="DatabasebackupLog" src="code/model/DatabasebackupLog.php" description="keeps a record for every database backup made..." xml="classes/DatabasebackupLog.xml"/>
+    <class name="DatabasebackupLogDetailForm" src="code/forms/gridfield/DatabasebackupLogDetailForm.php" xml="classes/DatabasebackupLogDetailForm.xml"/>
+    <class name="DatabasebackupLogDetailForm_ItemRequest" src="code/forms/gridfield/DatabasebackupLogDetailForm.php" xml="classes/DatabasebackupLogDetailForm_ItemRequest.xml"/>
+    <class name="DatabasebackupLogDetailForm_Controller" src="code/forms/gridfield/DatabasebackupLogDetailForm.php" xml="classes/DatabasebackupLogDetailForm_Controller.xml"/>
+    <class name="Databasebackup_ModelAdmin" src="code/cms/Databasebackup_ModelAdmin.php" xml="classes/Databasebackup_ModelAdmin.xml"/>
+  </namespace>
+</index>
