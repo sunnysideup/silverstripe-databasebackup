@@ -39,12 +39,24 @@ class DatabasebackupLogDetailForm_ItemRequest extends GridFieldDetailForm_ItemRe
 		$outcome = $this->restoreDatabaseBackup($databaseToRestore);
 		if($outcome) {
 			$message = _t('Databasebackup.DB_RESTORED', 'Database Restored, please reload the entire site to continue...');
+			$form->sessionMessage($message, 'good', false);
+			return $this->getToplevelController()->redirectBack();
 		}
 		else {
 			$message = _t('Databasebackup.DB_NOT_RESTORED', 'Database * NOT * Restored');
 		}
-		$this->response->addHeader('X-Status',rawurlencode($message));
-		return $this->getResponseNegotiator()->respond($this->request);
+		$toplevelController = $this->getToplevelController();
+		if($toplevelController && $toplevelController instanceof LeftAndMain) {
+			$backForm = $toplevelController->getEditForm();
+			$backForm->sessionMessage($message, 'good', false);
+		}
+		else {
+			$form->sessionMessage($message, 'good', false);
+		}
+		//when an item is deleted, redirect to the parent controller
+		$controller = $this->getToplevelController();
+		$controller->getRequest()->addHeader('X-Pjax', 'Content'); // Force a content refresh
+		return $controller->redirect($this->getBacklink(), 302); //redirect back to admin section
 	}
 
 
