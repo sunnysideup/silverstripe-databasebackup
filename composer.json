@@ -2,7 +2,6 @@
 	"name": "sunnysideup/databasebackup",
 	"type": "silverstripe-module",
 	"description": "Backup, download or restore an entire database from within the Silverstripe CMS. Great for copying data from Live to Test or making a backup before a big change.",
-	"homepage": "https://github.com/sunnysideup/silverstripe-copyfactory",
 	"keywords": ["silverstripe", "restore", "backup", "downlaod", "dataobject", "copy relations", "database"],
 	"license": "Sunny Side Up (BSD-3-Clause and CUSTOM)",
 	"authors":[
