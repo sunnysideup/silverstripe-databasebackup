@@ -3,7 +3,9 @@
     "type": "silverstripe-module",
     "description": "Backup, download or restore an entire database from within the Silverstripe CMS. Great for copying data from Live to Test or making a backup before a big change.",
     "keywords": [
-        "silverstripe",
+        "Silverstripe-CMS",
+        "CMS",
+        "Silverstripe",
         "restore",
         "backup",
         "downlaod",
@@ -20,7 +22,8 @@
         }
     ],
     "require": {
-        "silverstripe/framework": "~3.1"
+        "silverstripe/framework": "~3.1",
+        "silverstripe/cms": "~3.1"
     },
     "extra": {
         "installer-name": "databasebackup"
