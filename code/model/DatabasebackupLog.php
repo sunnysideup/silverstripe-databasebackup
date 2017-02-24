@@ -1,4 +1,4 @@
-    <?php
+<?php
 
 /**
  * keeps a record for every database backup made...
@@ -9,9 +9,8 @@
  */
 
 
-class DatabasebackupLog extends DataObject {
-
-
+class DatabasebackupLog extends DataObject
+{
     private static $singular_name = "Database Backup";
 
     private static $plural_name = "Database Backups";
@@ -64,19 +63,23 @@ class DatabasebackupLog extends DataObject {
      */
     private static $allow_restores_in_live_environment = false;
 
-    function canCreate($member = null){
+    public function canCreate($member = null)
+    {
         return Permission::check("ADMIN");
     }
 
-    function canDelete($member = null){
+    public function canDelete($member = null)
+    {
         return Permission::check("ADMIN");
     }
 
-    function canEdit($member = null){
+    public function canEdit($member = null)
+    {
         return Permission::check("ADMIN");
     }
 
-    function getCMSFields() {
+    public function getCMSFields()
+    {
         $fields = parent::getCMSFields();
         $fields->addFieldToTab("Root.Main", new ReadonlyField("Created"));
         $fields->addFieldToTab("Root.Main", new ReadonlyField("FullLocation"));
@@ -91,35 +94,35 @@ class DatabasebackupLog extends DataObject {
      * @casting
      * @return Int
      */
-    function getSizeInMegabytes(){
+    public function getSizeInMegabytes()
+    {
         return round($this->SizeInBytes / 1024 / 1024, 2);
     }
 
     /**
      * Adds a button the Site Config page of the CMS to rebuild the Lucene search index.
      */
-    public function getCMSActions() {
+    public function getCMSActions()
+    {
         $actions = parent::getCMSActions();
-        if($fileLocation = $this->getFullLocationWithExtension() || 1 == 1) {
+        if ($fileLocation = $this->getFullLocationWithExtension() || 1 == 1) {
             clearstatcache();
-            if(file_exists($this->FullLocation)) {
+            if (file_exists($this->FullLocation)) {
                 //do nothing
-            }
-            else {
+            } else {
                 $lastChanged = _t('Databasebackup.NO_BACKUP_IS_AVAILABLE', 'This Backup is Available ... ');
             }
-            if(Permission::check("ADMIN")) {
-                if(!$this->exists()) {
+            if (Permission::check("ADMIN")) {
+                if (!$this->exists()) {
                     $actions->push(
                         new FormAction(
                             'doMakeDatabaseBackup',
                             _t('Databasebackup.MAKE_DATABASE_BACKUP', 'Make Database Backup')."; ".$lastChanged
                         )
                     );
-                }
-                else {
-                    if(file_exists($this->FullLocation)) {
-                        if(!Director::IsLive() || $this->Config()->get("allow_restores_in_live_environment")) {
+                } else {
+                    if (file_exists($this->FullLocation)) {
+                        if (!Director::IsLive() || $this->Config()->get("allow_restores_in_live_environment")) {
                             $actions->push(
                                 new FormAction(
                                     'doRestoreDatabaseBackup',
@@ -139,22 +142,21 @@ class DatabasebackupLog extends DataObject {
      * if backup does not exist then make it ...
      * set size
      */
-    function onBeforeWrite(){
+    public function onBeforeWrite()
+    {
         parent::onBeforeWrite();
         clearstatcache();
-        if(!$this->exists()) {
-            if(!$this->FullLocation) {
-                if($fileLocation = $this->getFullLocationWithExtension()) {
+        if (!$this->exists()) {
+            if (!$this->FullLocation) {
+                if ($fileLocation = $this->getFullLocationWithExtension()) {
                     $fileLocation = $this->cycleDatabaseBackupFiles($fileLocation);
                     global $databaseConfig;
                     $compression = $this->Config()->get("compression");
-                    if($compression == "gzip") {
+                    if ($compression == "gzip") {
                         $command = "mysqldump -u ".$databaseConfig["username"]." -p".$databaseConfig["password"]." ".$databaseConfig["database"]."  | gzip >  ".$fileLocation;
-                    }
-                    else{
+                    } else {
                         $command = "mysqldump -u ".$databaseConfig["username"]." -p".$databaseConfig["password"]." ".$databaseConfig["database"]." >  ".$fileLocation;
                     }
-                    die("mysqldump -u ".$databaseConfig["username"]." -p".$databaseConfig["password"]." ".$databaseConfig["database"]." >  ".$fileLocation);
                     $this->DebugMessage = exec($command);
                     $this->FullLocation = $fileLocation;
                     clearstatcache();
@@ -163,10 +165,10 @@ class DatabasebackupLog extends DataObject {
             }
         }
         //just in case, we do this everytime...
-        if(!$this->SizeInBytes) {
+        if (!$this->SizeInBytes) {
             $this->SizeInBytes = filesize($this->FullLocation);
         }
-        if(!$this->Title) {
+        if (!$this->Title) {
             $this->Title = $this->FullLocation." (" .$this->getSizeInMegabytes()."mb.)";
         }
     }
@@ -174,10 +176,11 @@ class DatabasebackupLog extends DataObject {
     /**
      * delete me if file does not exist
      */
-    function onAfterWrite(){
+    public function onAfterWrite()
+    {
         parent::onAfterWrite();
         clearstatcache();
-        if(!file_exists($this->FullLocation)) {
+        if (!file_exists($this->FullLocation)) {
             $this->delete();
         }
     }
@@ -186,10 +189,11 @@ class DatabasebackupLog extends DataObject {
     /**
      * delete file if I get deleted
      */
-    function onBeforeDelete(){
+    public function onBeforeDelete()
+    {
         parent::onBeforeDelete();
         clearstatcache();
-        if(file_exists($this->FullLocation)) {
+        if (file_exists($this->FullLocation)) {
             unlink($this->FullLocation);
         }
     }
@@ -198,17 +202,17 @@ class DatabasebackupLog extends DataObject {
      *
      * @return Boolean
      */
-    public function restoreDatabaseBackup() {
-        if(!Director::IsLive() || $this->Config()->get("allow_restores_in_live_environment")) {
+    public function restoreDatabaseBackup()
+    {
+        if (!Director::IsLive() || $this->Config()->get("allow_restores_in_live_environment")) {
             $fileLocation = $this->FullLocation;
-            if(file_exists($fileLocation)) {
+            if (file_exists($fileLocation)) {
                 $this->saveToSession();
                 global $databaseConfig;
                 $compression = $this->Config()->get("compression");
-                if($compression == "gzip") {
+                if ($compression == "gzip") {
                     $command = "gunzip <  ".$fileLocation. " | mysql -u ".$databaseConfig["username"]." -p".$databaseConfig["password"]." ".$databaseConfig["database"]." ";
-                }
-                else {
+                } else {
                     $command = "mysql -u ".$databaseConfig["username"]." -p".$databaseConfig["password"]." ".$databaseConfig["database"]." <  ".$fileLocation;
                 }
                 exec($command);
@@ -227,8 +231,9 @@ class DatabasebackupLog extends DataObject {
      * we dont loose the backup information...
      * saves all the logs to session
      */
-    protected function saveToSession(){
-        foreach(DatabasebackupLog::get() as $object) {
+    protected function saveToSession()
+    {
+        foreach (DatabasebackupLog::get() as $object) {
             $array[$object->ID] = array(
                 "FullLocation" => $object->FullLocation,
                 "Title" => $object->Title,
@@ -243,11 +248,12 @@ class DatabasebackupLog extends DataObject {
      *
      * retrieves and updates all the logs from session
      */
-    protected function retrieveFromSession(){
+    protected function retrieveFromSession()
+    {
         $array = unserialize(Session::get("DatabasebackupLogs"));
-        foreach($array as $id => $values) {
+        foreach ($array as $id => $values) {
             $obj = DatabasebackupLog::get()->filter(array("FullLocation" => $values["FullLocation"]))->first();
-            if($obj) {
+            if ($obj) {
                 $obj->Title = convert::raw2sql($values["Title"]);
                 $obj->Notes = convert::raw2sql($values["Notes"]);
                 $obj->Created = convert::raw2sql($values["Created"]);
@@ -267,39 +273,39 @@ class DatabasebackupLog extends DataObject {
      * @return string File Location
      *
      */
-    protected function cycleDatabaseBackupFiles($fileLocation){
+    protected function cycleDatabaseBackupFiles($fileLocation)
+    {
         $copyFileLocation = $fileLocation;
         $max = $this->Config()->get("max_db_copies");
-        for($i = $max; $i > -1; $i--) {
+        for ($i = $max; $i > -1; $i--) {
             $lowerFileLocation = $this->olderBackupFileName($fileLocation, $i);
-            if($i == $max) {
+            if ($i == $max) {
                 //delete the top one ...
                 clearstatcache();
-                if(file_exists($lowerFileLocation)) {
+                if (file_exists($lowerFileLocation)) {
                     clearstatcache();
                     $obj = DatabasebackupLog::get()->filter(array("FullLocation" => $lowerFileLocation))->First();
-                    if($obj) {
+                    if ($obj) {
                         $obj->delete();
                     }
                 }
-            }
-            else {
+            } else {
                 $j = $i + 1;
                 $higherFileLocation = $fileLocation.".".$j.".bak";
                 clearstatcache();
-                if(file_exists($lowerFileLocation)) {
+                if (file_exists($lowerFileLocation)) {
                     //double-check the top one ...
-                    if(file_exists($higherFileLocation)) {
+                    if (file_exists($higherFileLocation)) {
                         clearstatcache();
                         $obj = DatabasebackupLog::get()->filter(array("FullLocation" => $higherFileLocation))->First();
-                        if($obj) {
+                        if ($obj) {
                             $obj->delete();
                         }
                     }
                     clearstatcache();
-                    if(rename($lowerFileLocation, $higherFileLocation)) {
+                    if (rename($lowerFileLocation, $higherFileLocation)) {
                         $obj = DatabasebackupLog::get()->filter(array("FullLocation" => $lowerFileLocation))->First();
-                        if($obj) {
+                        if ($obj) {
                             $obj->FullLocation = $higherFileLocation;
                             $obj->write();
                         }
@@ -308,26 +314,26 @@ class DatabasebackupLog extends DataObject {
             }
         }
         //just in case there were NO DBes to cycle....
-        if(!isset($lowerFileLocation)) {
+        if (!isset($lowerFileLocation)) {
             $lowerFileLocation = $this->olderBackupFileName($fileLocation, ".0.bak");
         }
 
         clearstatcache();
-        if(file_exists($fileLocation)) {
-            if(file_exists($lowerFileLocation)) {
+        if (file_exists($fileLocation)) {
+            if (file_exists($lowerFileLocation)) {
                 unlink($lowerFileLocation);
                 clearstatcache();
-                if(!file_exists($lowerFileLocation)) {
+                if (!file_exists($lowerFileLocation)) {
                     $obj = DatabasebackupLog::get()->filter(array("FullLocation" => $lowerFileLocation))->First();
-                    if($obj) {
+                    if ($obj) {
                         $obj->delete();
                     }
                 }
             }
             clearstatcache();
-            if(rename($fileLocation, $lowerFileLocation)) {
+            if (rename($fileLocation, $lowerFileLocation)) {
                 $obj = DatabasebackupLog::get()->filter(array("FullLocation" => $fileLocation))->First();
-                if($obj) {
+                if ($obj) {
                     $obj->FullLocation = $lowerFileLocation;
                     $obj->write();
                 }
@@ -341,11 +347,12 @@ class DatabasebackupLog extends DataObject {
      *
      * @return String | Null
      */
-    protected function getFullLocationWithExtension(){
+    protected function getFullLocationWithExtension()
+    {
         $fileLocation = $this->Config()->get("full_location_for_db_backup_file");
-        if($fileLocation) {
+        if ($fileLocation) {
             $compression = $this->Config()->get("compression");
-            if($compression == "gzip") {
+            if ($compression == "gzip") {
                 $fileLocation .= ".gz";
             }
             return $fileLocation;
@@ -361,7 +368,8 @@ class DatabasebackupLog extends DataObject {
      *
      * @return String
      */
-    protected function olderBackupFileName($fileLocation, $position){
+    protected function olderBackupFileName($fileLocation, $position)
+    {
         return $fileLocation.".".$position.".bak";
     }
 
@@ -369,21 +377,21 @@ class DatabasebackupLog extends DataObject {
      * check for existing backups
      *
      */
-    public function requireDefaultRecords(){
+    public function requireDefaultRecords()
+    {
         parent::requireDefaultRecords();
         $array = array($this->getFullLocationWithExtension());
         $arrayOfIDs = DatabasebackupLog::get()->map("ID", "ID")->toArray();
-        for($i = 0; $i < 100; $i++) {
+        for ($i = 0; $i < 100; $i++) {
             $array[] = $this->olderBackupFileName($array[0], $i);
         }
-        foreach($array as $fileLocation) {
+        foreach ($array as $fileLocation) {
             clearstatcache();
-            if(file_exists($fileLocation)) {
+            if (file_exists($fileLocation)) {
                 $obj = DatabasebackupLog::get()->filter(array("FullLocation" => $fileLocation))->First();
-                if($obj) {
+                if ($obj) {
                     //do nothing
-                }
-                else {
+                } else {
                     $className = $this->class;
                     $obj = new $className;
                     //make sure it has a full file location!
@@ -394,10 +402,8 @@ class DatabasebackupLog extends DataObject {
             }
         }
         $objects = DatabasebackupLog::get()->filter(array("ID" => $arrayOfIDs));
-        foreach($objects as $obj) {
+        foreach ($objects as $obj) {
             $obj->delete();
         }
     }
-
-
 }

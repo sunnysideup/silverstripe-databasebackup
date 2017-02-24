@@ -1,22 +1,31 @@
 {
-	"name": "sunnysideup/databasebackup",
-	"type": "silverstripe-module",
-	"description": "Backup, download or restore an entire database from within the Silverstripe CMS. Great for copying data from Live to Test or making a backup before a big change.",
-	"homepage": "https://github.com/sunnysideup/silverstripe-copyfactory",
-	"keywords": ["silverstripe", "restore", "backup", "downlaod", "dataobject", "copy relations", "database"],
-	"license": "Sunny Side Up (BSD-3-Clause and CUSTOM)",
-	"authors":[
-		{
-			"name": "Nicolaas Francken",
-			"homepage": "https://github.com/sunnysideup",
-			"email" : "modules@sunnysideup.co.nz",
-			"role" : "lead developer"
-		}
-	],
-	"require":{
-		"silverstripe/framework": "~3.1"
-	},
-	"extra": {
-		"installer-name": "databasebackup"
-	}
+    "name": "sunnysideup/databasebackup",
+    "type": "silverstripe-module",
+    "description": "Backup, download or restore an entire database from within the Silverstripe CMS. Great for copying data from Live to Test or making a backup before a big change.",
+    "keywords": [
+        "Silverstripe-CMS",
+        "CMS",
+        "Silverstripe",
+        "restore",
+        "backup",
+        "downlaod",
+        "dataobject",
+        "copy relations",
+        "database"
+    ],
+    "license": "Sunny Side Up (BSD-3-Clause and CUSTOM)",
+    "authors": [
+        {
+            "name": "Nicolaas Francken",
+            "email": "modules@sunnysideup.co.nz",
+            "role": "lead developer"
+        }
+    ],
+    "require": {
+        "silverstripe/framework": "~3.1",
+        "silverstripe/cms": "~3.1"
+    },
+    "extra": {
+        "installer-name": "databasebackup"
+    }
 }
