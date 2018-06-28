@@ -48,7 +48,7 @@ class Databasebackup_ModelAdmin extends ModelAdmin
         $model = Injector::inst()->get("DatabasebackupLog");
         $listfield->getConfig()->getComponentByType('GridFieldDetailForm')
             ->setItemRequestClass('DatabasebackupLogDetailForm_ItemRequest');
-            //->setFormActions($model->getCMSActions());
+        //->setFormActions($model->getCMSActions());
         return $form;
     }
 }
