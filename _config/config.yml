@@ -6,3 +6,8 @@ After: 'framework/*','cms/*'
 
 DatabasebackupLog:
   compression: ''
+
+
+Director:
+  rules:
+    'backupsystem//$Action/$ID/$OtherID': 'DatabasebackupLogDetailForm_Controller'

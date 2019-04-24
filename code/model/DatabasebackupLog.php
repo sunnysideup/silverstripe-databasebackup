@@ -86,7 +86,7 @@ class DatabasebackupLog extends DataObject
         $fields->addFieldToTab("Root.Main", new ReadonlyField("SizeInBytes"));
         $fields->addFieldToTab("Root.Main", new ReadonlyField("SizeInMegabytes"));
         $fields->removeFieldFromTab("Root.Main", "DebugMessage");
-        $fields->addFieldToTab("Root.Main", new LiteralField("DownloadLink", "<h2><a href=\"/DatabasebackupLogDetailForm_Controller/download/".$this->ID."/\">download now</a></h2>"));
+        $fields->addFieldToTab("Root.Main", new LiteralField("DownloadLink", "<h2><a href=\"/backupsystem/download/".$this->ID."/\">download now</a></h2>"));
         return $fields;
     }
 
