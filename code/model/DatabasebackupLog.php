@@ -155,13 +155,11 @@ class DatabasebackupLog extends DataObject
                 if ($fileLocation = $this->getFullLocationWithExtension()) {
                     $fileLocation = $this->cycleDatabaseBackupFiles($fileLocation);
                     global $databaseConfig;
-                    print_r($databaseConfig);
-                    die('asdf');
                     $compression = $this->Config()->get("compression");
                     if ($compression == "gzip") {
-                        $command = "mysqldump -u ".$databaseConfig["username"]." -p".$databaseConfig["password"]." ".$databaseConfig["database"]."  | gzip >  ".$fileLocation;
+                        $command = "mysqldump -u ".$databaseConfig["username"]." -p".$databaseConfig["password"]." -h ".$databaseConfig["server"]." ".$databaseConfig["database"]."  | gzip >  ".$fileLocation;
                     } else {
-                        $command = "mysqldump -u ".$databaseConfig["username"]." -p".$databaseConfig["password"]." ".$databaseConfig["database"]." >  ".$fileLocation;
+                        $command = "mysqldump -u ".$databaseConfig["username"]." -p".$databaseConfig["password"]." -h ".$databaseConfig["server"]." ".$databaseConfig["database"]." >  ".$fileLocation;
                     }
                     $this->DebugMessage = exec($command);
                     $this->FullLocation = $fileLocation;
@@ -217,9 +215,9 @@ class DatabasebackupLog extends DataObject
                 global $databaseConfig;
                 $compression = $this->Config()->get("compression");
                 if ($compression == "gzip") {
-                    $command = "gunzip <  ".$fileLocation. " | mysql -u ".$databaseConfig["username"]." -p".$databaseConfig["password"]." ".$databaseConfig["database"]." ";
+                    $command = "gunzip <  ".$fileLocation. " | mysql -u ".$databaseConfig["username"]." -p".$databaseConfig["password"]." -h ".$databaseConfig["server"]."  ".$databaseConfig["database"]." ";
                 } else {
-                    $command = "mysql -u ".$databaseConfig["username"]." -p".$databaseConfig["password"]." ".$databaseConfig["database"]." <  ".$fileLocation;
+                    $command = "mysql -u ".$databaseConfig["username"]." -p".$databaseConfig["password"]." -h ".$databaseConfig["server"]."  ".$databaseConfig["database"]." <  ".$fileLocation;
                 }
                 exec($command);
                 //reset list of backups ...
