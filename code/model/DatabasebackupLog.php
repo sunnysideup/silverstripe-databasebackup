@@ -96,7 +96,11 @@ class DatabasebackupLog extends DataObject
      */
     public function getSizeInMegabytes()
     {
-        return round($this->SizeInBytes / 1024 / 1024, 2);
+        if($this->SizeInBytes) {
+            return round($this->SizeInBytes / 1024 / 1024, 2);
+        } else {
+            return 'n/a';
+        }
     }
 
     /**
@@ -105,14 +109,14 @@ class DatabasebackupLog extends DataObject
     public function getCMSActions()
     {
         $actions = parent::getCMSActions();
-        if ($fileLocation = $this->getFullLocationWithExtension() || 1 == 1) {
-            clearstatcache();
-            if (file_exists($this->FullLocation)) {
-                //do nothing
-            } else {
-                $lastChanged = _t('Databasebackup.NO_BACKUP_IS_AVAILABLE', 'This Backup is Available ... ');
-            }
-            if (Permission::check("ADMIN")) {
+        if (Permission::check("ADMIN")) {
+            if ($fileLocation = $this->getFullLocationWithExtension()) {
+                clearstatcache();
+                if ($this->FullLocation && file_exists($this->FullLocation)) {
+                    //do nothing
+                } else {
+                    $lastChanged = _t('Databasebackup.NO_BACKUP_IS_AVAILABLE', 'This Backup is NOT Available ... Once created, you can access it here: '.$fileLocation);
+                }
                 if (!$this->exists()) {
                     $actions->push(
                         new FormAction(
@@ -121,7 +125,7 @@ class DatabasebackupLog extends DataObject
                         )
                     );
                 } else {
-                    if (file_exists($this->FullLocation)) {
+                    if ($this->FullLocation && file_exists($this->FullLocation)) {
                         if (!Director::IsLive() || $this->Config()->get("allow_restores_in_live_environment")) {
                             $actions->push(
                                 new FormAction(
@@ -133,8 +137,8 @@ class DatabasebackupLog extends DataObject
                     }
                 }
             }
+            $this->extend('updateCMSActions', $actions);
         }
-        $this->extend('updateCMSActions', $actions);
         return $actions;
     }
 
@@ -165,7 +169,7 @@ class DatabasebackupLog extends DataObject
             }
         }
         //just in case, we do this everytime...
-        if (!$this->SizeInBytes) {
+        if (!$this->SizeInBytes && file_exists($this->FullLocation)) {
             $this->SizeInBytes = filesize($this->FullLocation);
         }
         if (!$this->Title) {
