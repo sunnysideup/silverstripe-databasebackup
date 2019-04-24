@@ -155,6 +155,8 @@ class DatabasebackupLog extends DataObject
                 if ($fileLocation = $this->getFullLocationWithExtension()) {
                     $fileLocation = $this->cycleDatabaseBackupFiles($fileLocation);
                     global $databaseConfig;
+                    print_r($databaseConfig);
+                    die('asdf');
                     $compression = $this->Config()->get("compression");
                     if ($compression == "gzip") {
                         $command = "mysqldump -u ".$databaseConfig["username"]." -p".$databaseConfig["password"]." ".$databaseConfig["database"]."  | gzip >  ".$fileLocation;
